@@ -1,0 +1,37 @@
+@baseURL = http://localhost:8081
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpYXQiOjE3MDYwMDEwNzR9.qeeo6F4LoBXqlU2BKV2IgVlj07sStKubNxJU1Ll3U5w
+
+###
+
+GET  {{baseURL}}/api/heal-check
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+### GET LIST POST ###
+
+GET  {{baseURL}}/api/v1/post/list-post?limit=5&skip=0
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+### GET DETAIL POST ###
+
+GET  {{baseURL}}/api/v1/post/65
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+### GET POST SUGGETION ###
+
+GET  {{baseURL}}/api/v1/post/post-suggest
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}
+
+###
+
+GET  {{baseURL}}/api/v1/post/test
+Content-Type: application/json
+Accept: application/json
+Authorization: {{token}}

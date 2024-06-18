@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package upload;
+
+// SERVICES
+service UploadService{
+    rpc UpdateUploadRecord(UploadRequest) returns (UploadResponse) {};
+}
+
+message UploadRequest{
+    int32 target_id = 1;
+    repeated int32 _medias = 2;
+}
+
+message UploadResponse{
+    bool isSuccess = 1;
+}
