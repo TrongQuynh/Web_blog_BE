@@ -17,6 +17,9 @@ export class PostController {
   @Get("list-post")
   async getListPost(@Query() queries: any, @Req() request: Request, @Res() response: Response) {
     try {
+
+      console.time("[GET_LIST_POST]");
+
       const { limit = 20, skip = 0 } = queries;
 
       if ((limit && !isNumber(+limit)) || (skip && !isNumber(+skip))) {
@@ -24,6 +27,8 @@ export class PostController {
       }
 
       const data = await this.postService.getListPost(+skip, +limit);
+
+      console.timeEnd("[GET_LIST_POST]");
 
       return response.json({
         status: 200,
@@ -60,15 +65,48 @@ export class PostController {
     return "OK"
   }
 
+  @Get("top")
+  async getPostInTop(@Req() request: Request, @Res() response: Response){
+    try {
+      // console.time("[TOP_POST]");
+
+      const { type } = request.query;
+
+      const VALID_TYPE = ["DAY", "MONTH", "YEAR"];
+
+      const typeTop = type.toString().toUpperCase();
+
+      if (!VALID_TYPE.includes(typeTop)) {
+        throw new ExceptionResponse(HttpStatus.BAD_REQUEST, "Type must be DAY, MONTH, YEAR", null);
+      }
+
+      const _post = await this.postService.getPostInTop(typeTop);
+
+      // console.timeEnd("[TOP_POST]");
+
+      return response.json({
+        message: "OK",
+        status: 200,
+        data: _post
+      });
+      
+    } catch (error) {
+      console.log(error);
+      throw new CatchException(error.response);
+    }
+  }
+
   @Get(":id")
-  async getPostDetail(@Param("id") post_id: number, @Res() response: Response) {
+  async getPostDetail(@Req() request: Request,@Param("id") post_id: number, @Res() response: Response) {
     try {
 
       if (!isNumber(+post_id)) {
         throw new ExceptionResponse(HttpStatus.BAD_REQUEST, "Post id must be number", null);
       }
 
-      const data = await this.postService.getPostDetail(+post_id);
+      const user_id = +request.headers["user_id"];
+
+      const data = await this.postService.getPostDetail(+post_id, user_id);
 
       if (data == null) throw new ExceptionResponse(HttpStatus.NOT_FOUND, "Post not found", null);
       
@@ -89,7 +127,6 @@ export class PostController {
   @UseFilters(HttpExceptionFilter)
   async createPost(@Req() request: Request, @Body() body: NewPostDTO) {
     try {
-      console.log("[createPost]", body);
 
       const user_id = +request.headers["user_id"];
 

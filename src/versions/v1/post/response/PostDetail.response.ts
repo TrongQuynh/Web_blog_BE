@@ -1,6 +1,9 @@
-import { CommentEntity, MediaEntity, PostEntity } from "src/common/entity";
-import { HashtagEntity } from "src/common/entity/hashtag.entity";
+// import { CommentEntity, MediaEntity, PostEntity } from "src/common/entity";
+// import { HashtagEntity } from "src/common/entity/hashtag.entity";
+// import { ReactionEntity } from "src/common/entity/reaction.entity";
 // import { MediaResponse } from "./Media.response";
+
+import { CommentEntity, MediaEntity, PostEntity, HashtagEntity, ReactionEntity, ReactionType } from "web-blog-shared-resource";
 
 type HashTagResponse = {
     hashtag_id: number;
@@ -13,6 +16,15 @@ type MediaResponse = {
     url: string;
 }
 
+type ReactionResponse = {
+    unicorn: number;
+    heart: number;
+    wow: number;
+    rised_hand: number;
+    fire: number;
+    my_reaction: number;
+}
+
 export class PostDetailResponse{
     post_id: number;
     title: string;
@@ -20,7 +32,7 @@ export class PostDetailResponse{
     created_at: Date;
     updated_at: Date;
     hastag: HashTagResponse[] = [];
-    thumbnail: MediaResponse;
+    thumbnail: MediaResponse | null = null;
     user: {
         user_id: number;
         username: string;
@@ -28,6 +40,7 @@ export class PostDetailResponse{
     };
     comments: CommentEntity[];
     medias: MediaResponse[];
+    reactions: ReactionResponse;
 
     constructor(postEntity: PostEntity) {
         this.user = {
@@ -44,6 +57,8 @@ export class PostDetailResponse{
         this.comments = postEntity.comments;
         this.medias = this.mapMedia(postEntity.medias);
         this.thumbnail = this.handleMapThumbnail(postEntity.thumbnail_id, this.medias);
+        this.reactions = this.handleMapReaction(postEntity.reaction);
+        
     }
 
     mapHashtag(hashtags: HashtagEntity[]): HashTagResponse[]{
@@ -65,8 +80,19 @@ export class PostDetailResponse{
         })
     }
 
-    private handleMapThumbnail(thumbnail_id: string, _medias: MediaResponse[]): MediaResponse{
-        return _medias.find(media=> media.media_id === +thumbnail_id);
+    private handleMapReaction(reactions: ReactionEntity): ReactionResponse{
+        return {
+            fire: reactions.fire || 0,
+            heart: reactions.heart || 0,
+            rised_hand: reactions.rised_hand || 0,
+            unicorn: reactions.unicorn || 0,
+            wow: reactions.wow || 0,
+            my_reaction: ReactionType.NONE
+        }
+    }
+
+    private handleMapThumbnail(thumbnail_id: string, _medias: MediaResponse[]): MediaResponse | null{
+        return _medias.find(media=> media.media_id === +thumbnail_id) ?? null;
     }
 
 }

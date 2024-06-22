@@ -1,9 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewEntity } from "typeorm";
 import { UserEntity } from "./user.entity";
 import { CategoryEntity } from "./category.entity";
 import { CommentEntity } from "./comment.entity";
 import { HashtagEntity } from "./hashtag.entity";
 import { MediaEntity } from "./media.entity";
+import { ViewsEntiy } from "./views.entity";
+import { ReactionEntity } from "./reaction.entity";
 
 @Entity("posts")
 export class PostEntity{
@@ -26,13 +28,14 @@ export class PostEntity{
     @Column({name: "updated_at", type: "datetime"})
     updated_at: Date;
 
-    @Column({name: "views", type: "int"})
-    views: number;
-
     @OneToOne(()=> CategoryEntity)
     category: CategoryEntity;
 
-    @ManyToOne(()=> UserEntity, (user)=> user.posts, { cascade: true })
+    @OneToOne(()=> ReactionEntity)
+    @JoinColumn({name: "post_id", referencedColumnName: "post_id"})
+    reactions: ReactionEntity;
+
+    @ManyToOne(()=> UserEntity, (user)=> user.user_id, {cascade: true})
     @JoinColumn({name: "user_id"})
     user: UserEntity;
 
@@ -46,5 +49,9 @@ export class PostEntity{
 
     @ManyToMany(()=>HashtagEntity, hashtag=> hashtag.posts)
     hashtags: HashtagEntity[];
+
+    @OneToMany(()=> ViewsEntiy, (views)=> views.post)
+    @JoinColumn({name: "post_id", referencedColumnName: "post_id"})
+    views: ViewsEntiy[];
 
 }

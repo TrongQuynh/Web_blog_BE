@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate{
         const tokenInfo: any = true;//await this.grpcService.isTokenValid(token);
         console.log("[GUARD]", tokenInfo);
         
-        request.headers["user_id"] = '2';//tokenInfo.user_id + '';
+        request.headers["user_id"] = '3';//tokenInfo.user_id + '';
         if(tokenInfo === null) throw new ExceptionResponse(HttpStatus.UNAUTHORIZED, "Token invalid", null);
         return true;
     }

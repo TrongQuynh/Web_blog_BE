@@ -1,5 +1,7 @@
-import { PostEntity } from "src/common/entity";
-import { HashtagEntity } from "src/common/entity/hashtag.entity";
+// import { PostEntity } from "src/common/entity";
+// import { HashtagEntity } from "src/common/entity/hashtag.entity";
+
+import { PostEntity, HashtagEntity} from "web-blog-shared-resource";
 
 type HashTagResponse = {
     hashtag_id: number;
